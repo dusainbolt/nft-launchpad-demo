@@ -1,5 +1,5 @@
 import { makeStyles } from '@mui/styles';
-import theme from '@styles/theme';
+import theme, { defaultStyle } from '@styles/theme';
 
 export const layoutStyle = makeStyles({
   header: {
@@ -27,9 +27,11 @@ export const layoutStyle = makeStyles({
   },
   sidebar: {
     flexShrink: 0,
+    borderRight: '1px solid #e8ebed',
+    height: `calc(100vh - 64px)`,
   },
   sidebarWrap: {
-    width: 132,
+    width: 220,
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
@@ -81,7 +83,7 @@ export const layoutStyle = makeStyles({
     display: 'flex',
     alignItems: 'center',
     flex: '1 1',
-    border: '1px solid #e8ebed',
+    // border: '1px solid #e8ebed',
     borderRadius: theme.spacing(2),
   },
   walletWrap: {
@@ -102,6 +104,13 @@ export const layoutStyle = makeStyles({
     },
     '& svg': {
       marginRight: 3,
+    },
+  },
+  btnMetamask: {
+    ...defaultStyle.btnStyle('#dc6a00', '#dc6a001c'),
+    borderRadius: theme.spacing(2),
+    '& .icon-metamask': {
+      width: 32,
     },
   },
 });
