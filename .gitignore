@@ -1,0 +1,17 @@
+
+
+
+.DS_Store
+
+/.idea/
+
+/backend/node_modules/
+/backend/package-lock.json
+
+/frontend-user/package-lock.json
+/frontend-user/node_modules/
+/package-lock.json
+/frontend-user/.eslintcache
+/frontend-user/.env
+
+/backend/.env
