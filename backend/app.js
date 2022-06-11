@@ -29,7 +29,9 @@ mongoose.connect(process.env.MONGO_URL, {
   useCreateIndex: true,
 });
 
-app.use('/api', routes);
+// server route
+routes(app);
+
 // serve static files
 app.use('/assets', express.static('public'));
 

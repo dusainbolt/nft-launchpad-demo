@@ -1,1 +1,3 @@
-module.exports = {};
+module.exports = {
+  nftController: require('./nft.controller'),
+};

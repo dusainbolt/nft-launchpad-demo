@@ -1,4 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const nftRoute = require('./nft.route');
 
-module.exports = router;
+module.exports = (_app) => {
+  _app.use('/api', nftRoute);
+};

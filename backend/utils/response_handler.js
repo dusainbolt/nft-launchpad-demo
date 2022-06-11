@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 module.exports = {
   handlerSuccess(req, res, data, msg) {
     res.status(200).send({
@@ -29,5 +31,24 @@ module.exports = {
       msg: msg,
       data: null,
     });
+  },
+
+  validateRouter: (req) => {
+    const _errorFormatter = (errors) => {
+      const res = [];
+
+      for (let i = 0; i < errors.length; i++) {
+        res.push(errors[i].msg);
+      }
+
+      return res.join('\n');
+    };
+
+    let errorMsg = undefined;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      errorMsg = _errorFormatter(errors.array());
+    }
+    return errorMsg;
   },
 };
