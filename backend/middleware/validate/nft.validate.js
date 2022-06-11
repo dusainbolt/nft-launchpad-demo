@@ -1,4 +1,5 @@
 const { body } = require('express-validator');
+const web3 = require('web3');
 
 module.exports = {
   className: 'validateNFT',
@@ -22,6 +23,22 @@ module.exports = {
         .not()
         .isEmpty()
         .withMessage('Missing signature parameter.'),
+    ];
+  },
+
+  buyABI: () => {
+    return [
+      body('buyer')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Missing buyer parameter.')
+        .custom((value) => {
+          const isAddress = web3.utils.isAddress(value);
+          return isAddress
+            ? Promise.resolve(true)
+            : Promise.reject('Invalid buyer address');
+        }),
     ];
   },
 };

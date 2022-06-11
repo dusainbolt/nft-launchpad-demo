@@ -28,6 +28,10 @@ const NFTSchema = new Schema(
       type: String,
       require: true,
     },
+    tokenId: {
+      type: Number,
+      default: null,
+    },
     attributes: [],
     status: {
       type: Number,
@@ -38,6 +42,6 @@ const NFTSchema = new Schema(
   { usePushEach: true, timestamps: true }
 );
 
-NFTSchema.index({ owner: 1 }, { background: true });
+NFTSchema.index({ owner: 1, ipfsURI: 1 }, { background: true });
 
 module.exports = mongoose.model('Nft', NFTSchema);
