@@ -7,3 +7,7 @@ export const createNftAPI = async (body) => {
 export const searchNftAPI = async (params) => {
   return await axios.get('/nft', params);
 };
+
+export const abiBuyNftAPI = async (id, body) => {
+  return await axios.post(`/nft/buy-abi/${id}`, body);
+};

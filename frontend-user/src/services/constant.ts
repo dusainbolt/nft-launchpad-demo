@@ -21,4 +21,6 @@ export default class Constant {
     D_M_Y: 'DD/MM/YYYY',
     D_M_Y_H_M: 'DD/MM/YYYY HH:mm',
   };
+
+  static MAX_INT = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 }

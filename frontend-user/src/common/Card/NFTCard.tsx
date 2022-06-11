@@ -7,9 +7,33 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { getWalletSlice } from '@redux/slices/walletSlice';
 import { useAppSelector } from '@redux/store';
+import { abiBuyNftAPI } from '@request/nftRequest';
+import { ContractService } from '@services/contract';
+import { useWeb3React } from '@web3-react/core';
+import { useCallback, useState } from 'react';
 
 export const NFTCard = ({ nft }) => {
   const wallet = useAppSelector(getWalletSlice);
+  const { account, library } = useWeb3React();
+  const [loadingBuy, setLoadingBuy] = useState<boolean>(false);
+
+  const callbackBuy = (e) => {
+    console.log(e);
+  };
+
+  const handleBuyNFT = useCallback(async () => {
+    setLoadingBuy(true);
+    try {
+      const data = await abiBuyNftAPI(nft._id, { buyer: account });
+      const contractService = new ContractService(library, account as any);
+      // await contractService.approveToken();
+      await contractService.callBuyNFT(data.data, callbackBuy);
+      setLoadingBuy(false);
+    } catch (e) {
+      setLoadingBuy(false);
+    }
+  }, [account, library]);
+
   return (
     <Card sx={{ width: '100%' }}>
       <CardMedia component="img" height="180" image={nft?.image || ''} alt="green iguana" />
@@ -30,7 +54,12 @@ export const NFTCard = ({ nft }) => {
         </Stack>
       </CardContent>
       <CardActions>
-        <Button size="small" disabled={wallet.address === nft?.owner} variant="contained">
+        <Button
+          size="small"
+          disabled={wallet.address === nft?.owner || loadingBuy}
+          onClick={handleBuyNFT}
+          variant="contained"
+        >
           Buy
         </Button>
       </CardActions>
