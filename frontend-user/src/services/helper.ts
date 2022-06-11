@@ -1,3 +1,5 @@
+import { create as ipfsHttpClient } from 'ipfs-http-client';
+
 export default class Helper {
   static objValue = (object: any, key: any): any => {
     return object[key];
@@ -12,4 +14,8 @@ export default class Helper {
   };
 
   static getEtherUrl = (txId: string) => `${process.env.NEXT_PUBLIC_ETHER_SCAN}/tx/${txId}`;
+
+  static ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0' as any);
+
+  static ipfsPath = (added) => `https://ipfs.infura.io/ipfs/${added.path}`;
 }

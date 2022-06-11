@@ -1,5 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { TextField } from '@mui/material';
-import Constant from '@services/constant';
 import Helper from '@services/helper';
 import { Restrict } from '@type/field';
 import clsx from 'clsx';
@@ -10,16 +10,14 @@ export interface FieldTextType {
   label?: string;
   prefix?: any;
   suffix?: any;
-  placeholder?: string;
   className?: string;
   restric: Restrict;
-  type?: string;
   required?: boolean;
   field?: FieldInputProps<any>;
   meta?: FieldMetaProps<any>;
 }
 
-const FieldText: FC<FieldTextType> = ({ label, placeholder, className, type, field, required, restric }) => {
+const FieldText: FC<FieldTextType> = ({ label, className, field, required, restric, ...props }) => {
   const { touched, errors, setFieldValue } = useFormikContext();
   const fieldTouch: boolean = Helper.objValue(touched, field?.name);
   const fieldError: string = Helper.objValue(errors, field?.name);
@@ -34,21 +32,24 @@ const FieldText: FC<FieldTextType> = ({ label, placeholder, className, type, fie
   };
 
   return (
-    <div className={clsx(className)}>
+    <div style={{ marginTop: 12 }} className={clsx(className)}>
+      {label && (
+        <label style={{ fontWeight: 600 }}>
+          {label}
+          {required && <span style={{ color: 'red', fontWeight: 400, fontSize: 12 }}> *required</span>}
+        </label>
+      )}
       <TextField
         fullWidth
         id={field?.name}
         name={field?.name}
-        placeholder={placeholder || ''}
-        label={label || Constant.FORM.UNKNOWN_LABEL}
-        type={type || Constant.FORM.TYPE_TEXT}
         value={field?.value}
-        required={required as boolean}
         onChange={onChangeInput as any}
         error={isError}
         size="small"
         helperText={fieldTouch && fieldError}
         variant="outlined"
+        {...props}
       />
     </div>
   );

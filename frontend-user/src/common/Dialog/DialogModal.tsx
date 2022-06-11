@@ -27,7 +27,7 @@ const CustomDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 2, fontWeight: 700 }} {...other}>
       {children}
       {onClose ? (
         <IconButton
@@ -36,8 +36,6 @@ const CustomDialogTitle = (props: DialogTitleProps) => {
           sx={{
             position: 'absolute',
             right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
           }}
         >
           <CloseIcon />
@@ -51,6 +49,7 @@ interface DialogModalProps extends DialogProps {
   id: string;
   title?: string;
   onCloseModal: any;
+  width?: number;
   content?: ReactNode;
   action?: ReactNode;
   loadContent?: boolean;
@@ -61,6 +60,7 @@ export const DialogModal: FC<DialogModalProps> = ({
   loadContent,
   title = 'Modal Title',
   onCloseModal,
+  width = 500,
   content = '',
   action = '',
   ...otherProps
@@ -90,8 +90,20 @@ export const DialogModal: FC<DialogModalProps> = ({
           <CircularProgressCustom color="inherit" />
         </Backdrop>
       ) : (
-        <BootstrapDialog onClose={handleClose} aria-labelledby={id} {...otherProps}>
-          <CustomDialogTitle id={id} onClose={handleClose}>
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby={id}
+          sx={{
+            '& .MuiDialog-container': {
+              '& .MuiPaper-root': {
+                width: '100%',
+                maxWidth: width, // Set your width here
+              },
+            },
+          }}
+          {...otherProps}
+        >
+          <CustomDialogTitle id={id} onClose={onCloseModal && handleClose}>
             {title}
           </CustomDialogTitle>
           <DialogContent dividers>{content}</DialogContent>

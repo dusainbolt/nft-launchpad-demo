@@ -1,9 +1,7 @@
 import { getWalletSlice } from '@redux/slices/walletSlice';
 import { useAppSelector } from '@redux/store';
-import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import Web3 from 'web3';
-import { BigNumber as BN } from 'ethers';
 
 const useGetBalance = () => {
   const [balance, setBalance] = useState<any>('');
@@ -36,8 +34,10 @@ const useGetBalance = () => {
   };
 
   useEffect(() => {
-    getBalanceState();
-  }, []);
+    if (wallet.address) {
+      getBalanceState();
+    }
+  }, [wallet.address]);
 
   return {
     balance,

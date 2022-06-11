@@ -1,19 +1,18 @@
+import { EthIcon } from '@asset/icon/EthIcon';
+import { MetaMaskIcon } from '@asset/icon/metamask';
 import { Button } from '@common/Button';
-import { useRouter } from 'next/router';
+import { ButtonIcon } from '@common/Button/ButtonIcon';
+import { useControlConnect } from '@hooks/useConnectProvider';
+import useGetBalance from '@hooks/useGetBalanace';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Stack } from '@mui/material';
+import { getWalletSlice } from '@redux/slices/walletSlice';
+import { useAppSelector } from '@redux/store';
+import Helper from '@services/helper';
+import { TypeWallet } from '@type/wallet';
+import clsx from 'clsx';
 import { FC } from 'react';
 import { layoutStyle } from './layoutStyle';
-import { TypeWallet } from '@type/wallet';
-import { MetaMaskIcon } from '@asset/icon/metamask';
-import { useControlConnect } from '@hooks/useConnectProvider';
-import { useAppSelector } from '@redux/store';
-import { getWalletSlice } from '@redux/slices/walletSlice';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { ButtonIcon } from '@common/Button/ButtonIcon';
-import { Stack } from '@mui/material';
-import Helper from '@services/helper';
-import useGetBalance from '@hooks/useGetBalanace';
-import clsx from 'clsx';
-import { EthIcon } from '@asset/icon/EthIcon';
 
 interface SidebarProps {
   activeLink?: string;
@@ -22,7 +21,6 @@ interface SidebarProps {
 export const Sidebar: FC<SidebarProps> = () => {
   const styles = layoutStyle();
   // const { role } = useAppSelector(getAuthSlice);
-  const router = useRouter();
   const { connectWallet, onDisconnect } = useControlConnect();
   const wallet = useAppSelector(getWalletSlice);
   const { balance } = useGetBalance();
@@ -50,7 +48,7 @@ export const Sidebar: FC<SidebarProps> = () => {
             <div className={styles.walletAddress}>
               <MetaMaskIcon /> <span>{Helper.splitString(wallet.address)}</span>
             </div>
-            <div className={clsx(styles.walletAddress, styles.ethBalance)}>
+            <div className={clsx(styles.walletAddress)}>
               <EthIcon /> <span> {balance}</span>
             </div>
             <ButtonIcon sx={{ width: 'max-content' }} onClick={onDisconnect} icon={<LogoutIcon />} />
@@ -65,9 +63,6 @@ export const Sidebar: FC<SidebarProps> = () => {
             Metamask
           </Button>
         )}
-        {/* <Typography className={styles.spacingContent} variant="subtitle1" gutterBottom component="div">
-          Your wallet address:
-        </Typography> */}
       </div>
     </div>
   );

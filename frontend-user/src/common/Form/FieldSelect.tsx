@@ -1,4 +1,5 @@
-import { FormControl, FormHelperText, InputLabel, Select } from '@mui/material';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import { FormControl, FormHelperText, Select } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import { makeStyles } from '@mui/styles';
 import Helper from '@services/helper';
@@ -18,50 +19,33 @@ export const fieldSelectStyle = makeStyles({
 
 export interface FieldSelectType {
   label?: string;
-  // prefix?: any;
-  // suffix?: any;
-  placeholder?: string;
   className?: string;
   options: OptionSelect[];
-  // restric: Restrict;
-  // type?: string;
-  required?: boolean;
   field?: FieldInputProps<any>;
   meta?: FieldMetaProps<any>;
 }
 
-const FieldSelect: FC<FieldSelectType> = ({ label, placeholder, required, options, className, field }) => {
+const FieldSelect: FC<FieldSelectType> = ({ label, options, className, field }) => {
   const { touched, errors, setFieldValue } = useFormikContext();
   const fieldTouch: boolean = Helper.objValue(touched, field?.name);
   const fieldError: string = Helper.objValue(errors, field?.name);
   const isError: boolean = fieldTouch && Boolean(fieldError);
 
-  const styles = fieldSelectStyle();
-
   const handleChange = (event) => {
     setFieldValue(field?.name as string, event.target.value);
   };
 
-  label = `${label}${required && ' *'}`;
-
   return (
-    <div className={clsx(className)}>
+    <div style={{ marginTop: 12 }} className={clsx(className)}>
       <FormControl error={isError} fullWidth>
-        <InputLabel className={styles.label} id={`${field?.name}-label`}>
-          {label}
-        </InputLabel>
+        {label && <label style={{ fontWeight: 600 }}>{label}</label>}
         <Select
           labelId={`${field?.name}-label`}
           id={field?.name}
           name={field?.name}
           size="small"
           value={field?.value}
-          placeholder={placeholder}
-          label={label}
           onChange={handleChange}
-          inputProps={{
-            required,
-          }}
         >
           {options?.map((item, index) => (
             <MenuItem key={index} value={item.value}>
