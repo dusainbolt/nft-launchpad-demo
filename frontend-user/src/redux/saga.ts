@@ -1,9 +1,3 @@
-import { all } from 'redux-saga/effects';
-import authSaga from './sagas/authSaga';
-import profileSaga from './sagas/profileSaga';
-import adminKycSaga from './sagas/adminKycSaga';
-import kycHistorySaga from './sagas/kycHistorySaga';
-import projectSaga from './sagas/projectSaga';
-import kycSharedSaga from './sagas/kycSharedSaga';
-
+/* eslint-disable no-empty-function */
+/* eslint-disable @typescript-eslint/no-empty-function */
 export default function* rootSaga(): any {}

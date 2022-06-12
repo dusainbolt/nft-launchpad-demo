@@ -1,6 +1,7 @@
 import { Button } from '@common/Button';
 import { NFTCard } from '@common/Card/NFTCard';
 import { Layout } from '@common/Layout';
+import { CustomNoRowsOverlay } from '@common/TableGrid/CustomNoRowsOverlay';
 import useCreateNFT from '@hooks/useCreateNFT';
 import useFetchMyNFT from '@hooks/usefetchMyNFT';
 import { Divider, Grid } from '@mui/material';
@@ -10,9 +11,12 @@ import { Formik } from 'formik';
 import { FC, useState } from 'react';
 import * as yup from 'yup';
 import { ModalCreateNFT } from './ModalCreateNFT';
+import { ModalTransferHistory } from './ModelTransferHistory';
 
 const MyNFTComponent: FC<any> = () => {
-  const [visibleModelCreateNFt, setVisibleModalCreateNFT] = useState<boolean>(false);
+  const [visibleModalCreateNFt, setVisibleModalCreateNFT] = useState<boolean>(false);
+  const [visibleModalTransferHistory, setVisibleModalTransferHistory] = useState<boolean>(false);
+
   const { account } = useWeb3React();
   const validateModalCreateNFT = yup.object({
     name: yup.string().required(Validate.require('Name')),
@@ -36,15 +40,21 @@ const MyNFTComponent: FC<any> = () => {
     setVisibleModalCreateNFT((visible) => !visible);
   };
 
+  const toggleModalTransferHistory = () => {
+    setVisibleModalTransferHistory((visible) => !visible);
+  };
+
   const { onFetchMyNFT, createItems, boughtItems } = useFetchMyNFT();
   const { loadingForm, onSubmitCreateNFT } = useCreateNFT(onFetchMyNFT, toggleModalCreateNFT);
-
   return (
     <Layout>
       {account ? (
         <>
           <Button variant="contained" onClick={toggleModalCreateNFT}>
             Create Market Item
+          </Button>
+          <Button sx={{ marginLeft: 3 }} variant="contained" onClick={toggleModalTransferHistory}>
+            View Transfer History
           </Button>
           <Formik
             onSubmit={onSubmitCreateNFT}
@@ -55,7 +65,7 @@ const MyNFTComponent: FC<any> = () => {
               <ModalCreateNFT
                 loading={loadingForm as any}
                 toggleModal={toggleModalCreateNFT}
-                open={visibleModelCreateNFt}
+                open={visibleModalCreateNFt}
               />
             </>
           </Formik>
@@ -63,22 +73,35 @@ const MyNFTComponent: FC<any> = () => {
             Your Market Item
           </Divider>
           <Grid container spacing={2}>
-            {createItems.map((item, index) => (
-              <Grid key={index} item xs={3}>
-                <NFTCard nft={item} />
+            {createItems.length ? (
+              createItems.map((item, index) => (
+                <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+                  <NFTCard nft={item} btnStake />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <CustomNoRowsOverlay />
               </Grid>
-            ))}
+            )}
           </Grid>
           <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
             Your Bought Items
           </Divider>
           <Grid container spacing={2}>
-            {boughtItems.map((item, index) => (
-              <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
-                <NFTCard nft={item} btnStake />
+            {boughtItems.length ? (
+              boughtItems.map((item, index) => (
+                <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+                  <NFTCard nft={item} btnStake />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <CustomNoRowsOverlay />
               </Grid>
-            ))}
+            )}
           </Grid>
+          <ModalTransferHistory open={visibleModalTransferHistory} toggleModal={toggleModalTransferHistory} />
         </>
       ) : (
         'Please click metamask to Connect Wallet '

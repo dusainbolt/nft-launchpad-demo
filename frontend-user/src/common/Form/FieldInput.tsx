@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { InputAdornment, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import Helper from '@services/helper';
 import { Restrict } from '@type/field';
 import clsx from 'clsx';

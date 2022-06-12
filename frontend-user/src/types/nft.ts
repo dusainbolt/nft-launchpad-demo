@@ -3,3 +3,9 @@ export enum NFTStatus {
   BOUGHT,
   STAKED,
 }
+
+export enum NFTTransfer {
+  BUY,
+  STAKE,
+  UNSTAKE,
+}

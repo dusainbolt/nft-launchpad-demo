@@ -15,3 +15,11 @@ export const abiBuyNftAPI = async (id, query) => {
 export const abiStakeNftAPI = async (id) => {
   return await axios.get(`/nft/stake-abi/${id}`);
 };
+
+export const fetchTransferAPI = async (owner) => {
+  return await axios.get(`/nft-transfer/${owner}`);
+};
+
+export const fetchClaimAPI = async (owner) => {
+  return await axios.get(`/claim/${owner}`);
+};

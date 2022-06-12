@@ -84,9 +84,11 @@ export class ContractService {
       const transactionReceipt = await sendResponse.wait();
 
       console.log('transactionReceipt: ', transactionReceipt);
-      callbackTransaction(EventPayment.PAYMENT_SUCCESS, transactionReceipt);
+      NotificationManager.success('Transaction Success, We are redirecting website', 'Success');
 
-      NotificationManager.success('Transaction Success, please reload again', 'Success');
+      setTimeout(() => {
+        callbackTransaction(EventPayment.PAYMENT_SUCCESS, transactionReceipt);
+      }, 1000);
     } catch (e: any) {
       console.log('error: ', e);
       if (this.isRevert(e)) {
@@ -163,6 +165,22 @@ export class ContractService {
         const transaction = await nftContract.unstake(tokenId);
         await transaction.wait(1);
         NotificationManager.success('Unstake success', 'Success');
+      }
+    } catch (e: any) {
+      console.log('error: ', e);
+      NotificationManager.warning(e?.toString(), 'Warning');
+      NotificationManager.warning('Please try again or contact admin', 'Error');
+    }
+  };
+
+  public faucetToken = async () => {
+    try {
+      const tokenContract = this.getContractToken();
+      if (tokenContract) {
+        const transaction = await tokenContract.faucet();
+
+        await transaction.wait(1);
+        NotificationManager.success('Receive 100 LHD success', 'Success');
       }
     } catch (e: any) {
       console.log('error: ', e);

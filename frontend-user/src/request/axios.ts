@@ -1,6 +1,4 @@
 /* eslint-disable class-methods-use-this */
-import { logout } from '@redux/slices/authSlice';
-import { storeWrapper } from '@redux/store';
 import Constant from '@services/constant';
 import axios, { AxiosInstance } from 'axios';
 import { NotificationManager } from 'react-notifications';

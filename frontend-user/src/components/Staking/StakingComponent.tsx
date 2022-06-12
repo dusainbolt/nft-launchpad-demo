@@ -2,17 +2,20 @@ import { TokenIcon } from '@asset/icon/TokenIcon';
 import { Button } from '@common/Button';
 import { NFTCard } from '@common/Card/NFTCard';
 import { Layout } from '@common/Layout';
+import { CustomNoRowsOverlay } from '@common/TableGrid/CustomNoRowsOverlay';
 import useFetchStaking from '@hooks/useFetchMyStaking';
 import { Box, Divider, Grid, Stack } from '@mui/material';
 import { ContractService } from '@services/contract';
 import Helper from '@services/helper';
 import { useWeb3React } from '@web3-react/core';
 import { FC, useCallback, useState } from 'react';
+import { ModalClaimHistory } from './ModelClaimHistory';
 
 const StakingComponent: FC<any> = () => {
   const { listNFT, stakingInfo, getStakingInfo } = useFetchStaking();
   const { account, library } = useWeb3React();
   const [loadingTransaction, setLoadingTransaction] = useState<boolean>(false);
+  const [visibleModalClaimHistory, setVisibleModalClaimHistory] = useState<boolean>(false);
 
   const handleClaimReward = useCallback(async () => {
     setLoadingTransaction(true);
@@ -25,6 +28,10 @@ const StakingComponent: FC<any> = () => {
     }
     setLoadingTransaction(false);
   }, [account, library]);
+
+  const toggleModalClaimHistory = () => {
+    setVisibleModalClaimHistory((visible) => !visible);
+  };
 
   return (
     <Layout>
@@ -54,6 +61,7 @@ const StakingComponent: FC<any> = () => {
                 </Stack>
               </Grid>
             </Grid>
+
             <Grid container sx={{ marginTop: 2 }} spacing={2}>
               <Grid item xs={4}>
                 <div>Your balance</div>
@@ -95,17 +103,26 @@ const StakingComponent: FC<any> = () => {
               </Grid>
             </Grid>
           </Box>
-
+          <Button sx={{ marginTop: 3 }} variant="contained" onClick={toggleModalClaimHistory}>
+            View Claim History
+          </Button>
           <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
             Your stake Item
           </Divider>
           <Grid container spacing={2}>
-            {listNFT.map((item, index) => (
-              <Grid key={index} item xs={3}>
-                <NFTCard nft={item} btnUnstake />
+            {listNFT.length ? (
+              listNFT.map((item, index) => (
+                <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+                  <NFTCard nft={item} btnUnstake />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <CustomNoRowsOverlay />
               </Grid>
-            ))}
+            )}
           </Grid>
+          <ModalClaimHistory open={visibleModalClaimHistory} toggleModal={toggleModalClaimHistory} />
         </>
       ) : (
         'Please click metamask to Connect Wallet '

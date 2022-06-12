@@ -12,15 +12,30 @@ import { ContractService } from '@services/contract';
 import Helper from '@services/helper';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
+import { useRouter } from 'next/dist/client/router';
 import { useCallback, useState } from 'react';
 
 export const NFTCard = ({ nft, btnBuy = true, btnStake = false, btnUnstake = false }) => {
   const wallet = useAppSelector(getWalletSlice);
   const { account, library } = useWeb3React();
   const [loadingBuy, setLoadingBuy] = useState<boolean>(false);
+  const router = useRouter();
 
-  const callbackTransaction = () => {
+  const callbackBuyNFT = () => {
     setLoadingBuy(false);
+    router.push('/my-nft');
+  };
+
+  const callbackStakeNFT = () => {
+    setLoadingBuy(false);
+    router.push('/staking');
+  };
+
+  const callBackUnstakeNFT = () => {
+    setLoadingBuy(false);
+    setTimeout(() => {
+      router.push('/my-nft');
+    }, 1000);
   };
 
   const handleBuyNFT = useCallback(async () => {
@@ -36,7 +51,7 @@ export const NFTCard = ({ nft, btnBuy = true, btnStake = false, btnUnstake = fal
       if (allowance.eq(0)) {
         await contractService.approveToken();
       }
-      await contractService.sendTransaction(data.data, contractService.buyNFTAddress, callbackTransaction);
+      await contractService.sendTransaction(data.data, contractService.buyNFTAddress, callbackBuyNFT);
     } catch (e) {
       setLoadingBuy(false);
     }
@@ -53,7 +68,7 @@ export const NFTCard = ({ nft, btnBuy = true, btnStake = false, btnUnstake = fal
         alert('You must be approve all for staking contract');
         await contractService.approveAllStake();
       }
-      await contractService.sendTransaction(data.data, contractService.stakeAddress, callbackTransaction);
+      await contractService.sendTransaction(data.data, contractService.stakeAddress, callbackStakeNFT);
     } catch (e) {
       setLoadingBuy(false);
     }
@@ -64,6 +79,7 @@ export const NFTCard = ({ nft, btnBuy = true, btnStake = false, btnUnstake = fal
     try {
       const contractService = new ContractService(library, account as any);
       await contractService.unstake(nft?.tokenId);
+      callBackUnstakeNFT();
     } catch (e) {
       setLoadingBuy(false);
     }
