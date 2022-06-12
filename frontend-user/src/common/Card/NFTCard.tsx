@@ -7,23 +7,26 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { getWalletSlice } from '@redux/slices/walletSlice';
 import { useAppSelector } from '@redux/store';
-import { abiBuyNftAPI } from '@request/nftRequest';
+import { abiBuyNftAPI, abiStakeNftAPI } from '@request/nftRequest';
 import { ContractService } from '@services/contract';
 import Helper from '@services/helper';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 
-export const NFTCard = ({ nft }) => {
+export const NFTCard = ({ nft, btnBuy = true, btnStake = false, btnUnstake = false }) => {
   const wallet = useAppSelector(getWalletSlice);
   const { account, library } = useWeb3React();
   const [loadingBuy, setLoadingBuy] = useState<boolean>(false);
 
-  const callbackBuy = (e) => {
+  const callbackTransaction = () => {
     setLoadingBuy(false);
   };
 
   const handleBuyNFT = useCallback(async () => {
+    if (!account) {
+      alert('Please connect wallet to buy NFT');
+    }
     setLoadingBuy(true);
     try {
       const data = await abiBuyNftAPI(nft._id, { buyer: account });
@@ -33,11 +36,41 @@ export const NFTCard = ({ nft }) => {
       if (allowance.eq(0)) {
         await contractService.approveToken();
       }
-      await contractService.callBuyNFT(data.data, callbackBuy);
+      await contractService.sendTransaction(data.data, contractService.buyNFTAddress, callbackTransaction);
     } catch (e) {
       setLoadingBuy(false);
     }
   }, [account, library]);
+
+  const handleStakeNFT = useCallback(async () => {
+    setLoadingBuy(true);
+    try {
+      const data = await abiStakeNftAPI(nft._id);
+      const contractService = new ContractService(library, account as any);
+      const nftContract = contractService.getContractNFT();
+      const approveAll = await nftContract.isApprovedForAll(account, contractService.stakeAddress);
+      if (!approveAll) {
+        alert('You must be approve all for staking contract');
+        await contractService.approveAllStake();
+      }
+      await contractService.sendTransaction(data.data, contractService.stakeAddress, callbackTransaction);
+    } catch (e) {
+      setLoadingBuy(false);
+    }
+  }, [account, library]);
+
+  const handleUnStakeNFT = useCallback(async () => {
+    setLoadingBuy(true);
+    try {
+      const contractService = new ContractService(library, account as any);
+      await contractService.unstake(nft?.tokenId);
+    } catch (e) {
+      setLoadingBuy(false);
+    }
+  }, [account, library]);
+
+  const showBtnBuy = !btnUnstake && btnBuy && !btnStake;
+  const showbtnStakeUnstake = btnStake || btnUnstake;
 
   return (
     <Card sx={{ width: '100%' }}>
@@ -74,17 +107,32 @@ export const NFTCard = ({ nft }) => {
         </Stack>
       </CardContent>
       <CardActions>
-        <Button
-          size="small"
-          disabled={wallet?.address === nft?.owner}
-          loading={loadingBuy}
-          onClick={handleBuyNFT}
-          loadingIndicator="Processing"
-          variant="contained"
-          sx={{ width: 'max-content', minWidth: 100 }}
-        >
-          Buy
-        </Button>
+        {showBtnBuy && (
+          <Button
+            size="small"
+            disabled={wallet?.address === nft?.owner}
+            loading={loadingBuy}
+            onClick={handleBuyNFT}
+            loadingIndicator="Processing"
+            variant="contained"
+            sx={{ width: 'max-content', minWidth: 100 }}
+          >
+            Buy
+          </Button>
+        )}
+
+        {showbtnStakeUnstake && (
+          <Button
+            size="small"
+            loading={loadingBuy}
+            onClick={btnUnstake ? handleUnStakeNFT : handleStakeNFT}
+            loadingIndicator="Processing"
+            variant="contained"
+            sx={{ width: 'max-content', minWidth: 100 }}
+          >
+            {btnUnstake ? 'Unstake' : 'Stake'}
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

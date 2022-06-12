@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { useEagerConnect, useInactiveListener } from './useEagerConnect';
 import { TypeWallet } from '@type/wallet';
-import { injected, walletConnect } from '@connectors/walletConnector';
+import { injected } from '@connectors/walletConnector';
 import { NotificationManager } from 'react-notifications';
 import Constant from '@services/constant';
 import { useAppDispatch } from '@redux/store';
@@ -29,7 +29,6 @@ export const useConnectProvider = () => {
 
 export const connectorsByName: { [typeWallet in TypeWallet]: any } = {
   [TypeWallet.METAMASK]: injected,
-  [TypeWallet.WALLET_CONNECT]: walletConnect,
 };
 
 export const useControlConnect = (): {
@@ -57,17 +56,13 @@ export const useControlConnect = (): {
   };
 
   const onDisconnect = () => {
-    const text = 'Do you want to disconnect wallet?';
-    // eslint-disable-next-line no-restricted-globals
-    if (confirm(text) === true) {
-      if (connector instanceof WalletConnectConnector) {
-        connector.close();
-      } else {
-        deactivate();
-      }
-
-      dispatch(disconnectWallet());
+    if (connector instanceof WalletConnectConnector) {
+      connector.close();
+    } else {
+      deactivate();
     }
+
+    dispatch(disconnectWallet());
   };
   return { connectWallet, onDisconnect };
 };

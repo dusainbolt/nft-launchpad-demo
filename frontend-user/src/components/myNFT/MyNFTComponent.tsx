@@ -5,6 +5,7 @@ import useCreateNFT from '@hooks/useCreateNFT';
 import useFetchMyNFT from '@hooks/usefetchMyNFT';
 import { Divider, Grid } from '@mui/material';
 import Validate from '@services/validate';
+import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { FC, useState } from 'react';
 import * as yup from 'yup';
@@ -12,7 +13,7 @@ import { ModalCreateNFT } from './ModalCreateNFT';
 
 const MyNFTComponent: FC<any> = () => {
   const [visibleModelCreateNFt, setVisibleModalCreateNFT] = useState<boolean>(false);
-
+  const { account } = useWeb3React();
   const validateModalCreateNFT = yup.object({
     name: yup.string().required(Validate.require('Name')),
     description: yup.string().required(Validate.require('Description')),
@@ -40,38 +41,48 @@ const MyNFTComponent: FC<any> = () => {
 
   return (
     <Layout>
-      <Button variant="contained" onClick={toggleModalCreateNFT}>
-        Create Market Item
-      </Button>
-      <Formik onSubmit={onSubmitCreateNFT} validationSchema={validateModalCreateNFT} initialValues={initialValuesNFT}>
+      {account ? (
         <>
-          <ModalCreateNFT
-            loading={loadingForm as any}
-            toggleModal={toggleModalCreateNFT}
-            open={visibleModelCreateNFt}
-          />
+          <Button variant="contained" onClick={toggleModalCreateNFT}>
+            Create Market Item
+          </Button>
+          <Formik
+            onSubmit={onSubmitCreateNFT}
+            validationSchema={validateModalCreateNFT}
+            initialValues={initialValuesNFT}
+          >
+            <>
+              <ModalCreateNFT
+                loading={loadingForm as any}
+                toggleModal={toggleModalCreateNFT}
+                open={visibleModelCreateNFt}
+              />
+            </>
+          </Formik>
+          <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
+            Your Market Item
+          </Divider>
+          <Grid container spacing={2}>
+            {createItems.map((item, index) => (
+              <Grid key={index} item xs={3}>
+                <NFTCard nft={item} />
+              </Grid>
+            ))}
+          </Grid>
+          <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
+            Your Bought Items
+          </Divider>
+          <Grid container spacing={2}>
+            {boughtItems.map((item, index) => (
+              <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+                <NFTCard nft={item} btnStake />
+              </Grid>
+            ))}
+          </Grid>
         </>
-      </Formik>
-      <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
-        Your Market Item
-      </Divider>
-      <Grid container spacing={2}>
-        {createItems.map((item, index) => (
-          <Grid key={index} item xs={3}>
-            <NFTCard nft={item} />
-          </Grid>
-        ))}
-      </Grid>
-      <Divider sx={{ marginTop: 3, fontWeight: 600, fontSize: 20, marginBottom: 2 }} textAlign="left">
-        Your Bought Items
-      </Divider>
-      <Grid container spacing={2}>
-        {boughtItems.map((item, index) => (
-          <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
-            <NFTCard nft={item} />
-          </Grid>
-        ))}
-      </Grid>
+      ) : (
+        'Please click metamask to Connect Wallet '
+      )}
     </Layout>
   );
 };

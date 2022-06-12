@@ -1,6 +1,7 @@
 import { getWalletSlice } from '@redux/slices/walletSlice';
 import { useAppSelector } from '@redux/store';
 import { ContractService } from '@services/contract';
+import Helper from '@services/helper';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber as BN } from 'ethers';
 import { useEffect, useState } from 'react';
@@ -45,7 +46,7 @@ const useGetBalance = () => {
 
       const balanceReturn = balance.div(BN.from(10).pow(decimal as number));
 
-      setBalanceToken(balanceReturn.lte(1) ? balanceReturn.toNumber().toFixed(5) : balanceReturn.toNumber().toFixed(3));
+      setBalanceToken(Helper.getCurrencyVal(balanceReturn));
     } catch (err) {
       console.log('e: ', err);
     }

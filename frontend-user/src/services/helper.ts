@@ -1,4 +1,5 @@
 import { create as ipfsHttpClient } from 'ipfs-http-client';
+import { BigNumber as BN } from 'ethers';
 
 export default class Helper {
   static objValue = (object: any, key: any): any => {
@@ -18,4 +19,9 @@ export default class Helper {
   static ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0' as any);
 
   static ipfsPath = (added) => `https://ipfs.infura.io/ipfs/${added.path}`;
+
+  static getCurrencyVal = (val: BN) => {
+    if (!val) return 0;
+    return val.lte(1) ? val.toNumber().toFixed(5) : val.toNumber().toFixed(3);
+  };
 }

@@ -1,7 +1,10 @@
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { Contract, ethers } from 'ethers';
 import { NotificationManager } from 'react-notifications';
-import TradeTokenABI from '@asset/contracts/TradeToken';
+import TradeTokenABI from '@asset/contracts/TradeToken.json';
+import BuyNftABI from '@asset/contracts/BuyNFT.json';
+import StakingABI from '@asset/contracts/StakingNFT.json';
+
 import Constant from './constant';
 
 export enum EventPayment {
@@ -13,9 +16,11 @@ export enum EventPayment {
 }
 
 export class ContractService {
-  public buyNFTAddress: string;
+  public buyNFTAddress: string = process.env.NEXT_PUBLIC_BUY_NFT_CONTRACT as any;
 
-  public tokenAddress: string;
+  public tokenAddress: string = process.env.NEXT_PUBLIC_TOKEN_CONTRACT as string;
+
+  public stakeAddress: string = process.env.NEXT_PUBLIC_STAKING_CONTRACT as string;
 
   private library: Web3Provider;
 
@@ -32,8 +37,6 @@ export class ContractService {
   constructor(library: Web3Provider, account: string) {
     this.library = library;
     this.account = account;
-    this.buyNFTAddress = process.env.NEXT_PUBLIC_BUY_NFT_CONTRACT as string;
-    this.tokenAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT as string;
   }
 
   private isRevert = (error: any) => error?.toString()?.indexOf('execution reverted: ') !== -1;
@@ -60,7 +63,11 @@ export class ContractService {
     return new Contract(address, ABI, this.getProviderOrSigner(this.library, this.account) as any);
   };
 
-  public callBuyNFT = async (abiCode: string, callbackTransaction: (event: EventPayment, data: any) => void) => {
+  public sendTransaction = async (
+    abiCode: string,
+    to: string,
+    callbackTransaction: (event: EventPayment, data: any) => void
+  ) => {
     try {
       const singer = this.getSigner();
       const address = await singer.getAddress();
@@ -68,7 +75,7 @@ export class ContractService {
       const nonce = await singer.getTransactionCount();
       const sendResponse = await singer.sendTransaction({
         from: address,
-        to: process.env.NEXT_PUBLIC_BUY_NFT_CONTRACT,
+        to,
         data: abiCode,
         gasPrice,
         nonce,
@@ -79,7 +86,7 @@ export class ContractService {
       console.log('transactionReceipt: ', transactionReceipt);
       callbackTransaction(EventPayment.PAYMENT_SUCCESS, transactionReceipt);
 
-      NotificationManager.success('Buy NFT Success, please reload again', 'Success');
+      NotificationManager.success('Transaction Success, please reload again', 'Success');
     } catch (e: any) {
       console.log('error: ', e);
       if (this.isRevert(e)) {
@@ -95,6 +102,14 @@ export class ContractService {
     return this.getContract(this.tokenAddress, TradeTokenABI);
   };
 
+  public getContractNFT = () => {
+    return this.getContract(this.buyNFTAddress, BuyNftABI);
+  };
+
+  public getContractStaking = () => {
+    return this.getContract(this.stakeAddress, StakingABI);
+  };
+
   public approveToken = async () => {
     try {
       const tokenContract = this.getContractToken();
@@ -103,6 +118,51 @@ export class ContractService {
 
         await transaction.wait(1);
         NotificationManager.success('Approve success', 'Success');
+      }
+    } catch (e: any) {
+      console.log('error: ', e);
+      NotificationManager.warning(e?.toString(), 'Warning');
+      NotificationManager.warning('Please try again or contact admin', 'Error');
+    }
+  };
+
+  public approveAllStake = async () => {
+    try {
+      const nftContract = this.getContractNFT();
+      if (nftContract) {
+        const transaction = await nftContract.setApprovalForAll(this.stakeAddress, true);
+        await transaction.wait(1);
+        NotificationManager.success('Approval for all success', 'Success');
+      }
+    } catch (e: any) {
+      console.log('error: ', e);
+      NotificationManager.warning(e?.toString(), 'Warning');
+      NotificationManager.warning('Please try again or contact admin', 'Error');
+    }
+  };
+
+  public claimReward = async () => {
+    try {
+      const nftContract = this.getContractStaking();
+      if (nftContract) {
+        const transaction = await nftContract.claimReward();
+        await transaction.wait(1);
+        NotificationManager.success('Claim reward success', 'Success');
+      }
+    } catch (e: any) {
+      console.log('error: ', e);
+      NotificationManager.warning(e?.toString(), 'Warning');
+      NotificationManager.warning('Please try again or contact admin', 'Error');
+    }
+  };
+
+  public unstake = async (tokenId: number) => {
+    try {
+      const nftContract = this.getContractStaking();
+      if (nftContract) {
+        const transaction = await nftContract.unstake(tokenId);
+        await transaction.wait(1);
+        NotificationManager.success('Unstake success', 'Success');
       }
     } catch (e: any) {
       console.log('error: ', e);

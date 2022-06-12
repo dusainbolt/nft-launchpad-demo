@@ -103,6 +103,26 @@ export function useInactiveListener(suppress: boolean = false) {
         console.log('switchError', switchError);
       }
     };
+    // const addToken = async () => {
+    //   try {
+    //     // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+    //     await (window as any).ethereum.request({
+    //       method: 'wallet_watchAsset',
+    //       params: {
+    //         type: 'ERC20', // Initially only supports ERC20, but eventually more!
+    //         options: {
+    //           address: process.env.NEXT_PUBLIC_TOKEN_CONTRACT, // The address that the token is at.
+    //           symbol: 'LHD', // A ticker symbol or shorthand, up to 5 chars.
+    //           decimals: 18, // The number of decimals in the token
+    //           // image: tokenImage, // A string url of the token logo
+    //         },
+    //       },
+    //     });
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
     switchNetwork();
+    // addToken();
   }, []);
 }

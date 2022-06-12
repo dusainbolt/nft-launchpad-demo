@@ -1,6 +1,6 @@
 export enum TypeWallet {
   METAMASK,
-  WALLET_CONNECT,
+  // WALLET_CONNECT,
 }
 
 export type WalletSlice = {
