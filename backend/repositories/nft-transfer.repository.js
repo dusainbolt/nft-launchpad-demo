@@ -18,6 +18,7 @@ module.exports = {
   search: function (conditions, pagination, sortConditions) {
     return _NFTTransferModel
       .find(conditions)
+      .populate({ path: 'nftId' })
       .skip((pagination.page - 1) * pagination.pageSize)
       .limit(pagination.pageSize)
       .sort(sortConditions);

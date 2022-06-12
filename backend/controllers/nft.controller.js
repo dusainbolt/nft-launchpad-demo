@@ -1,4 +1,4 @@
-const { _nftRepo } = require('../repositories');
+const { _nftRepo, _nftTransferRepo, _claimRepo } = require('../repositories');
 const consts = require('../utils/consts');
 const _helper = require('../utils/helper');
 const { handlerSuccess, handlerError } = require('../utils/response_handler');
@@ -149,6 +149,56 @@ module.exports = {
         .encodeABI();
 
       return handlerSuccess(req, res, abiEncode, 'GET_DATA_SUCCESS');
+    } catch (error) {
+      _logger.error(new Error(error));
+      next(error);
+    }
+  },
+
+  searchTransfer: async (req, res, next) => {
+    try {
+      const { owner } = req.params;
+      const { pagination, sortConditions } = _helper.renderPaginateSort(
+        req.query
+      );
+
+      // prepare search conditions
+      const conditions = {
+        $or: [{ to: owner }, { from: owner }],
+      };
+
+      const data = await _nftTransferRepo.search(
+        conditions,
+        pagination,
+        sortConditions
+      );
+
+      return handlerSuccess(req, res, data, 'GET_DATA_SUCCESS');
+    } catch (error) {
+      _logger.error(new Error(error));
+      next(error);
+    }
+  },
+
+  searchClaim: async (req, res, next) => {
+    try {
+      const { owner } = req.params;
+      const { pagination, sortConditions } = _helper.renderPaginateSort(
+        req.query
+      );
+
+      // prepare search conditions
+      const conditions = {
+        owner,
+      };
+
+      const data = await _claimRepo.search(
+        conditions,
+        pagination,
+        sortConditions
+      );
+
+      return handlerSuccess(req, res, data, 'GET_DATA_SUCCESS');
     } catch (error) {
       _logger.error(new Error(error));
       next(error);

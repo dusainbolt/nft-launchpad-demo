@@ -38,7 +38,7 @@ class _helper {
     return {
       pagination: {
         page: parseInt(query.page) || 1,
-        pageSize: parseInt(query.pageSize) || 10,
+        pageSize: parseInt(query.pageSize) || 10000000,
       },
       sortConditions: query.sortBy
         ? convertConditionsSort(query.sortBy)

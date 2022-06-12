@@ -16,4 +16,7 @@ router.get(
 
 router.get('/nft/stake-abi/:id', nftController.genABIStakeToken);
 
+router.get('/nft-transfer/:owner', nftController.searchTransfer);
+router.get('/claim/:owner', nftController.searchClaim);
+
 module.exports = router;
