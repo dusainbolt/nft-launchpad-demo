@@ -50,6 +50,8 @@ describe("BuyNFT Contract Testing", () => {
     await tradeToken.transfer(account1.address, utils.parseUnits("1000", 18));
 
     await tradeToken.transfer(account2.address, utils.parseUnits("1000", 18));
+
+    await tradeToken.faucet();
   });
 
   it("Should return the correct owner", async () => {
