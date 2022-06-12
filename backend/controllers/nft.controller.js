@@ -30,9 +30,11 @@ module.exports = {
         return handlerError(req, res, 'INVALID_SIGNATURE');
       }
 
+      const count = await _nftRepo.count();
       const createNFTData = {
         ...messageObj,
         owner: body.owner,
+        tokenId: count + 1,
       };
 
       const nft = await _nftRepo.create(createNFTData);
@@ -93,8 +95,8 @@ module.exports = {
       const price = ethers.utils.parseUnits(nft.price.toString(), 18);
 
       const messageHash = ethers.utils.solidityKeccak256(
-        ['address', 'string', 'uint256', 'address'],
-        [buyer, nft.ipfsURI, price, nft.owner]
+        ['address', 'string', 'uint256', 'uint256', 'address'],
+        [buyer, nft.ipfsURI, nft.tokenId, price, nft.owner]
       );
 
       const signature = web3.eth.accounts.sign(
@@ -105,7 +107,7 @@ module.exports = {
       // const data = await _buyNFTContract.methods.balanceOf(buyer).call();
 
       const abiEncode = _buyNFTContract.methods
-        .buyNFT(nft.ipfsURI, price, nft.owner, signature)
+        .buyNFT(nft.ipfsURI, nft.tokenId, price, nft.owner, signature)
         .encodeABI();
 
       return handlerSuccess(req, res, abiEncode, 'GET_DATA_SUCCESS');

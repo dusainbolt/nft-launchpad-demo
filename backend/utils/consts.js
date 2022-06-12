@@ -1,5 +1,6 @@
 module.exports = {
   SORT: { FIELD: 'createdAt', ASC: 1, DESC: -1 },
 
-  NFT_STATUS: { CREATED: 0, BOUGHT: 1, PENDING_BOUGHT: 2 },
+  NFT_STATUS: { CREATED: 0, BOUGHT: 1 },
+  TRANSFER_TYPE: { BUY: 0 },
 };
