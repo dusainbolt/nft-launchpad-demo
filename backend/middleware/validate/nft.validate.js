@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const web3 = require('web3');
 
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
 
   buyABI: () => {
     return [
-      body('buyer')
+      query('buyer')
         .trim()
         .not()
         .isEmpty()

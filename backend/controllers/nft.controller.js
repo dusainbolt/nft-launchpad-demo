@@ -80,7 +80,7 @@ module.exports = {
   genABIBuyToken: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { buyer } = req.body;
+      const { buyer } = req.query;
 
       const nft = await _nftRepo.findOne({
         _id: id,
@@ -108,6 +108,44 @@ module.exports = {
 
       const abiEncode = _buyNFTContract.methods
         .buyNFT(nft.ipfsURI, nft.tokenId, price, nft.owner, signature)
+        .encodeABI();
+
+      return handlerSuccess(req, res, abiEncode, 'GET_DATA_SUCCESS');
+    } catch (error) {
+      _logger.error(new Error(error));
+      next(error);
+    }
+  },
+
+  genABIStakeToken: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      const nft = await _nftRepo.findOne({
+        _id: id,
+        status: consts.NFT_STATUS.BOUGHT,
+      });
+
+      if (!nft) {
+        return handlerError(req, res, 'INVALID_NFT');
+      }
+
+      const price = ethers.utils.parseUnits(nft.price.toString(), 18);
+
+      const messageHash = ethers.utils.solidityKeccak256(
+        ['address', 'uint256', 'uint256'],
+        [nft.owner, nft.tokenId, price]
+      );
+
+      const signature = web3.eth.accounts.sign(
+        messageHash,
+        process.env.PRIVATE_KEY_OWNER
+      ).signature;
+
+      // const data = await _buyNFTContract.methods.balanceOf(buyer).call();
+
+      const abiEncode = _stakeNFTContract.methods
+        .stake(nft.tokenId, price, signature)
         .encodeABI();
 
       return handlerSuccess(req, res, abiEncode, 'GET_DATA_SUCCESS');

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const consts = require('../utils/consts');
 const Schema = mongoose.Schema;
 
-const NFTSchema = new Schema(
+const NFTTransfer = new Schema(
   {
     from: {
       type: String,
@@ -34,6 +34,6 @@ const NFTSchema = new Schema(
   { usePushEach: true, timestamps: true }
 );
 
-NFTSchema.index({ from: 1, to: 1 }, { background: true });
+NFTTransfer.index({ from: 1, to: 1 }, { background: true });
 
-module.exports = mongoose.model('NftTransfer', NFTSchema);
+module.exports = mongoose.model('NftTransfer', NFTTransfer);

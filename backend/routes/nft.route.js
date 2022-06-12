@@ -7,11 +7,13 @@ const router = express.Router();
 /* NFT APIs */
 router.post('/nft', nftValidate.create(), validate, nftController.create);
 router.get('/nft', nftController.search);
-router.post(
+router.get(
   '/nft/buy-abi/:id',
   nftValidate.buyABI(),
   validate,
   nftController.genABIBuyToken
 );
+
+router.get('/nft/stake-abi/:id', nftController.genABIStakeToken);
 
 module.exports = router;

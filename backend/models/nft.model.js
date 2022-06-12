@@ -31,6 +31,7 @@ const NFTSchema = new Schema(
     tokenId: {
       type: Number,
       default: null,
+      unique: true,
     },
     attributes: [],
     status: {
