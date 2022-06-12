@@ -24,6 +24,7 @@ const useFetchMyNFT = () => {
   };
 
   useEffect(() => {
+    console.log('account:', account);
     if (account) {
       onFetchMyNFT();
     }

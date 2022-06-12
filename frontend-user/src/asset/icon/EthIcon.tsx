@@ -1,6 +1,6 @@
 export const EthIcon = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 32 32">
       <g fill="none" fillRule="evenodd">
         <circle cx="16" cy="16" r="16" fill="#627EEA" />
         <g fill="#FFF" fillRule="nonzero">

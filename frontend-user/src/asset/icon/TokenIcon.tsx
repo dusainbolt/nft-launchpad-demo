@@ -1,7 +1,7 @@
-export const TokenIcon = () => {
+export const TokenIcon = ({ size = 22 }) => {
   return (
-    <div style={{ borderRadius: '50%', overflow: 'hidden', width: 21, height: 21 }}>
-      <svg x="0" y="0" width="21" height="21">
+    <div style={{ borderRadius: '50%', overflow: 'hidden', width: size, height: size }}>
+      <svg x="0" y="0" width={size} height={size}>
         <rect
           x="0"
           y="0"

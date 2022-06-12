@@ -13,6 +13,10 @@ export enum EventPayment {
 }
 
 export class ContractService {
+  public buyNFTAddress: string;
+
+  public tokenAddress: string;
+
   private library: Web3Provider;
 
   private account: string;
@@ -28,6 +32,8 @@ export class ContractService {
   constructor(library: Web3Provider, account: string) {
     this.library = library;
     this.account = account;
+    this.buyNFTAddress = process.env.NEXT_PUBLIC_BUY_NFT_CONTRACT as string;
+    this.tokenAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT as string;
   }
 
   private isRevert = (error: any) => error?.toString()?.indexOf('execution reverted: ') !== -1;
@@ -56,7 +62,6 @@ export class ContractService {
 
   public callBuyNFT = async (abiCode: string, callbackTransaction: (event: EventPayment, data: any) => void) => {
     try {
-      console.log('abiCode', abiCode);
       const singer = this.getSigner();
       const address = await singer.getAddress();
       const gasPrice = await singer.getGasPrice();
@@ -69,29 +74,40 @@ export class ContractService {
         nonce,
       });
 
-      const transactionReceipt = await sendResponse.wait(sendResponse.confirmations);
+      const transactionReceipt = await sendResponse.wait();
+
+      console.log('transactionReceipt: ', transactionReceipt);
       callbackTransaction(EventPayment.PAYMENT_SUCCESS, transactionReceipt);
+
+      NotificationManager.success('Buy NFT Success, please reload again', 'Success');
     } catch (e: any) {
+      console.log('error: ', e);
       if (this.isRevert(e)) {
         NotificationManager.warning(this.renderRevertMessage(e), 'Warning');
       } else {
-        console.log('e: ', e);
-        NotificationManager.error('Please try again or contact admin', 'Error');
+        NotificationManager.warning(e?.toString(), 'Warning');
+        NotificationManager.warning('Please try again or contact admin', 'Error');
       }
     }
   };
 
+  public getContractToken = () => {
+    return this.getContract(this.tokenAddress, TradeTokenABI);
+  };
+
   public approveToken = async () => {
     try {
-      const contract = this.getContract(process.env.NEXT_PUBLIC_TOKEN_CONTRACT as any, TradeTokenABI);
-      if (contract) {
-        const transaction = await contract.approve(process.env.NEXT_PUBLIC_BUY_NFT_CONTRACT, Constant.MAX_INT);
-        console.log('Approve Token', transaction);
+      const tokenContract = this.getContractToken();
+      if (tokenContract) {
+        const transaction = await tokenContract.approve(this.buyNFTAddress, Constant.MAX_INT);
 
         await transaction.wait(1);
+        NotificationManager.success('Approve success', 'Success');
       }
-    } catch (e) {
-      console.log('error approve token: ', e);
+    } catch (e: any) {
+      console.log('error: ', e);
+      NotificationManager.warning(e?.toString(), 'Warning');
+      NotificationManager.warning('Please try again or contact admin', 'Error');
     }
   };
 }

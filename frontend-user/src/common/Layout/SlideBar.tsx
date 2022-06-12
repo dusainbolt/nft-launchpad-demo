@@ -1,5 +1,6 @@
 import { EthIcon } from '@asset/icon/EthIcon';
 import { MetaMaskIcon } from '@asset/icon/metamask';
+import { TokenIcon } from '@asset/icon/TokenIcon';
 import { Button } from '@common/Button';
 import { ButtonIcon } from '@common/Button/ButtonIcon';
 import { useControlConnect } from '@hooks/useConnectProvider';
@@ -20,25 +21,9 @@ interface SidebarProps {
 
 export const Sidebar: FC<SidebarProps> = () => {
   const styles = layoutStyle();
-  // const { role } = useAppSelector(getAuthSlice);
   const { connectWallet, onDisconnect } = useControlConnect();
   const wallet = useAppSelector(getWalletSlice);
-  const { balance } = useGetBalance();
-
-  // const menu = {
-  //   [Role.USER]: [
-  //     { text: 'Profile', icon: <InboxIcon />, href: '/user', hideByProject: true },
-  //     { text: 'Edit Profile', icon: <InboxIcon />, href: '/user/edit', hideByProject: true },
-  //     { text: 'History', icon: <InboxIcon />, href: '/user/history', hideByProject: true },
-  //     { text: 'Share History', icon: <InboxIcon />, href: '/user/shared', hideByProject: true },
-  //     // Project route together user route
-  //     { text: 'Dashboard', icon: <InboxIcon />, href: '/user/project' },
-  //   ],
-  //   [Role.ADMIN]: [
-  //     { text: 'My Account', icon: <InboxIcon />, href: '/admin' },
-  //     { text: 'KYC', icon: <InboxIcon />, href: '/admin/kyc' },
-  //   ],
-  // };
+  const { balance, balanceToken } = useGetBalance();
 
   return (
     <div className={styles.sidebar}>
@@ -49,7 +34,12 @@ export const Sidebar: FC<SidebarProps> = () => {
               <MetaMaskIcon /> <span>{Helper.splitString(wallet.address)}</span>
             </div>
             <div className={clsx(styles.walletAddress)}>
-              <EthIcon /> <span> {balance}</span>
+              <EthIcon /> <span style={{ fontWeight: 700 }}> {balance}</span>
+              <span style={{ fontSize: 11, marginLeft: 5, display: 'block' }}>ETH</span>
+            </div>
+            <div className={clsx(styles.walletAddress)}>
+              <TokenIcon size={30} /> <span style={{ fontWeight: 700, marginLeft: 3 }}> {balanceToken}</span>
+              <span style={{ fontSize: 11, marginLeft: 5, display: 'block' }}>LHD</span>
             </div>
             <ButtonIcon sx={{ width: 'max-content' }} onClick={onDisconnect} icon={<LogoutIcon />} />
           </Stack>

@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import { TokenIcon } from '@asset/icon/TokenIcon';
 import { Button } from '@common/Button';
 import { DialogModal } from '@common/Dialog/DialogModal';
 import FieldText from '@common/Form/FieldInput';
-import { CircularProgress, DialogActions } from '@mui/material';
+import { CircularProgress, DialogActions, IconButton, InputAdornment } from '@mui/material';
 import Helper from '@services/helper';
 import { Restrict } from '@type/field';
 import { Field, useFormikContext } from 'formik';
@@ -55,7 +56,16 @@ export const ModalCreateNFT: FC<{
             type="number"
             label="Price"
             required
-            sx={{ width: 150, display: 'block' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton aria-label="toggle password visibility" edge="end">
+                    <TokenIcon /> <span style={{ fontSize: 11, marginLeft: 5 }}>LHD</span>
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ width: 180, display: 'block' }}
           />
           <label style={{ fontWeight: 600, display: 'block', marginTop: 12 }}>
             Image <span style={{ color: 'red', fontWeight: 400, fontSize: 12 }}> *required</span>

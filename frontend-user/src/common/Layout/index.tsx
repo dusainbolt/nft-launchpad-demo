@@ -24,7 +24,7 @@ export const Layout: FC<LayoutProps> = ({ children, breadcrumbs }) => {
       link: '/',
     },
     {
-      text: 'MyNFT',
+      text: 'My NFT',
       link: '/my-nft',
     },
     {

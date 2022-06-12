@@ -67,7 +67,7 @@ const MyNFTComponent: FC<any> = () => {
       </Divider>
       <Grid container spacing={2}>
         {boughtItems.map((item, index) => (
-          <Grid key={index} item xs={3}>
+          <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
             <NFTCard nft={item} />
           </Grid>
         ))}

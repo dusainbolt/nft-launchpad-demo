@@ -5,12 +5,14 @@ import { useAppDispatch, useAppSelector } from '@redux/store';
 import Constant from '@services/constant';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
+import { useControlConnect } from './useConnectProvider';
 
 export function useEagerConnect() {
   const { activate, account, chainId, active } = useWeb3React();
   const [tried, setTried] = useState(false);
   const { address } = useAppSelector(getWalletSlice);
   const dispatch = useAppDispatch();
+  const { onDisconnect } = useControlConnect();
 
   useEffect(() => {
     address &&
@@ -38,6 +40,12 @@ export function useEagerConnect() {
       setTried(true);
     }
   }, [tried, active]);
+
+  useEffect(() => {
+    if (tried && !account) {
+      onDisconnect();
+    }
+  }, [tried, account]);
 
   return tried;
 }
