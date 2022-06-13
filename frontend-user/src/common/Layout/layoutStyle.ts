@@ -24,11 +24,18 @@ export const layoutStyle = makeStyles({
     maxWidth: 'calc(100% - 96px)',
     padding: `30px 40px 0 20px`,
     width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100%',
+      padding: '24px',
+    },
   },
   sidebar: {
     flexShrink: 0,
     borderRight: '1px solid #e8ebed',
     height: `calc(100vh - 64px)`,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
   sidebarWrap: {
     width: 220,

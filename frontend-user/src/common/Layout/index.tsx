@@ -38,7 +38,7 @@ export const Layout: FC<LayoutProps> = ({ children, breadcrumbs }) => {
       <div className={styles.header}>
         <div className={styles.logoWrap}>
           <LogoDevIcon />
-          <div>NFT Launchpad</div>
+          <div style={{ whiteSpace: 'nowrap' }}>NFT Launchpad</div>
           <Breadcrumbs separator="›" aria-label="breadcrumb">
             <Link underline="hover" key="-1" color="inherit" href="/"></Link>
             {breadcrumbs?.map((item, index) =>
