@@ -88,7 +88,7 @@ const StakingComponent: FC<any> = () => {
                   {Helper.getCurrencyVal(stakingInfo?.earn)}
                 </div>
               </Grid>
-              {(stakingInfo?.earn as BigNumber).gt(0) && (
+              {(stakingInfo?.earn as BigNumber)?.gt(0) && (
                 <Grid item xs={1}>
                   <div>
                     <Button
