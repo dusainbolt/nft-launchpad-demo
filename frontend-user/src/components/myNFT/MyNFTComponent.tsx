@@ -76,7 +76,7 @@ const MyNFTComponent: FC<any> = () => {
             {createItems.length ? (
               createItems.map((item, index) => (
                 <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
-                  <NFTCard nft={item} btnStake />
+                  <NFTCard nft={item} />
                 </Grid>
               ))
             ) : (
