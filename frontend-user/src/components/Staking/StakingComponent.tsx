@@ -8,6 +8,7 @@ import { Box, Divider, Grid, Stack } from '@mui/material';
 import { ContractService } from '@services/contract';
 import Helper from '@services/helper';
 import { useWeb3React } from '@web3-react/core';
+import { BigNumber } from 'ethers';
 import { FC, useCallback, useState } from 'react';
 import { ModalClaimHistory } from './ModelClaimHistory';
 
@@ -87,20 +88,22 @@ const StakingComponent: FC<any> = () => {
                   {Helper.getCurrencyVal(stakingInfo?.earn)}
                 </div>
               </Grid>
-              <Grid item xs={1}>
-                <div>
-                  <Button
-                    size="small"
-                    loading={loadingTransaction}
-                    onClick={handleClaimReward}
-                    loadingIndicator="Processing"
-                    variant="contained"
-                    sx={{ width: 'max-content', minWidth: 100 }}
-                  >
-                    Claim Reward
-                  </Button>
-                </div>
-              </Grid>
+              {(stakingInfo?.earn as BigNumber).gt(0) && (
+                <Grid item xs={1}>
+                  <div>
+                    <Button
+                      size="small"
+                      loading={loadingTransaction}
+                      onClick={handleClaimReward}
+                      loadingIndicator="Processing"
+                      variant="contained"
+                      sx={{ width: 'max-content', minWidth: 100 }}
+                    >
+                      Claim Reward
+                    </Button>
+                  </div>
+                </Grid>
+              )}
             </Grid>
           </Box>
           <Button sx={{ marginTop: 3 }} variant="contained" onClick={toggleModalClaimHistory}>
