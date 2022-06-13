@@ -8,7 +8,6 @@ import { compose } from '@reduxjs/toolkit';
 import theme, { createEmotionCache } from '@styles/theme';
 import { Web3ReactProvider } from '@web3-react/core';
 import { AppProps } from 'next/app';
-import Head from 'next/head';
 import { FC } from 'react';
 import { useStore } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -46,10 +45,10 @@ const MyApp: FC<MyAppProps> = (props: MyAppProps) => {
 
   return (
     <CacheProvider value={emotionCache}>
-      <Head>
+      {/* <Head>
         <title>My App</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-      </Head>
+      </Head> */}
       <Web3ReactProvider getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}

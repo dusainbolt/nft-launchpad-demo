@@ -12,7 +12,38 @@ export default class MyDocument extends Document {
         <Head>
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
+          <link rel="icon" type="image/x-icon" href="/favicon.ico"></link>
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+          {/* https://semidotinfotech.com/blog/wp-content/uploads/2021/05/A-Guide-to-Develop-NFT-Marketplace.jpg */}
+          <title>NFT Launchpad - Le Huy Du</title>
+          <meta
+            name="description"
+            content="NFT Launchpad Development Services | NFT Launchpad Development | NFT Launchpad Services | NFT Launchpad Development Solutions"
+          />
+          <meta name="keywords" content="nft, marketplace, staking" />
+          <meta name="author" content="dusainbolt" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="NFT Launchpad - Le Huy Du" />
+          <meta
+            property="og:description"
+            content="NFT Launchpad Development Services | NFT Launchpad Development | NFT Launchpad Services | NFT Launchpad Development Solutions"
+          />
+          <meta property="og:site_name" content="NFT Launchpad - Le Huy Du" />
+          <meta
+            property="og:image"
+            content="https://semidotinfotech.com/blog/wp-content/uploads/2021/05/A-Guide-to-Develop-NFT-Marketplace.jpg"
+          />
+          <meta property="og:url" content="https://nft-launchpad-demo.vercel.app/" />
+          <meta property="twitter:card" content="summary" />
+          <meta
+            name="twitter:image"
+            content="https://semidotinfotech.com/blog/wp-content/uploads/2021/05/A-Guide-to-Develop-NFT-Marketplace.jpg"
+          />
+          <meta property="twitter:title" content="NFT Launchpad - Le Huy Du" />
+          <meta
+            property="twitter:description"
+            content="NFT Launchpad Development Services | NFT Launchpad Development | NFT Launchpad Services | NFT Launchpad Development Solutions"
+          />
         </Head>
         <body>
           <Main />
